@@ -175,6 +175,7 @@ return [
          * Custom Service Providers...
          */
         App\Domain\DomainServiceProvider::class,
+        App\Infrastructure\Database\DatabaseServiceProvider::class,
     ])->toArray(),
 
     /*
