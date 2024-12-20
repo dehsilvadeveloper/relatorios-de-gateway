@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Database\Eloquent\Providers;
 
+use App\Domain\GatewayLog\Repositories\GatewayLogRepositoryInterface;
 use App\Infrastructure\Database\Eloquent\BaseRepositoryEloquent;
+use App\Infrastructure\Database\Eloquent\GatewayLogRepositoryEloquent;
 use App\Infrastructure\Database\Eloquent\Interfaces\RepositoryEloquentInterface;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,6 +18,7 @@ class EloquentServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->bindBaseRepositoryClasses();
+        $this->bindRepositoryClasses();
     }
 
     /**
@@ -35,5 +38,15 @@ class EloquentServiceProvider extends ServiceProvider
     private function bindBaseRepositoryClasses(): void
     {
         $this->app->bind(RepositoryEloquentInterface::class, BaseRepositoryEloquent::class);
+    }
+
+    /**
+     * Bind repository classes
+     *
+     * @return void
+     */
+    private function bindRepositoryClasses(): void
+    {
+        $this->app->bind(GatewayLogRepositoryInterface::class, GatewayLogRepositoryEloquent::class);
     }
 }
