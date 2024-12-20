@@ -65,6 +65,10 @@ auth.json
 /public/storage
 /vendor
 /storage/*.key
+
+# Allow specific file on Laravel storage
+!/storage/app/gateway_logs/logs.txt
+
 # Ignore the file inside the folders, but keep the folder structure
 /storage/framework/cache/**
 /storage/framework/sessions/**
