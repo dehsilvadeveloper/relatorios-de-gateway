@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Database\Factories;
 
-use Tests\TestCase;
 use App\Domain\GatewayLog\Models\GatewayLog;
+use Tests\TestCase;
 
 class GatewayLogFactoryTest extends TestCase
 {

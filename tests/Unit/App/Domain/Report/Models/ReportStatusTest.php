@@ -1,35 +1,30 @@
 <?php
 
-namespace Tests\Unit\App\Domain\GatewayLog\Models;
+namespace Tests\Unit\App\Domain\Report\Models;
 
-use App\Domain\GatewayLog\Models\GatewayLog;
+use App\Domain\Report\Models\ReportStatus;
 use Tests\ModelTestCase;
 use Tests\TestHelpers\DataTransferObjects\ModelConfigurationAssertionParamsDto;
 
-class GatewayLogTest extends ModelTestCase
+class ReportStatusTest extends ModelTestCase
 {
     /**
      * @group models
-     * @group gateway_log
+     * @group report
      */
     public function test_has_valid_configuration(): void
     {
         $dto = ModelConfigurationAssertionParamsDto::from([
-            'model' => new GatewayLog(),
+            'model' => new ReportStatus(),
             'fillable' => [
-                'service_id',
-                'service_name',
-                'consumer_id',
-                'latency_proxy',
-                'latency_gateway',
-                'latency_request',
-                'raw_log'
+                'name'
             ],
             'hidden' => [],
             'casts' => [
                 'id' => 'int'
             ],
-            'table' => 'gateway_logs'
+            'dates' => [],
+            'table' => 'report_statuses'
         ]);
 
         $this->runConfigurationAssertions($dto);
