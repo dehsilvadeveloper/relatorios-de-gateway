@@ -132,4 +132,117 @@ class GatewayLogRepositoryEloquentTest extends TestCase
 
         $this->assertNull($foundRecord);
     }
+
+    /**
+     * @group repositories
+     * @group gateway_log
+     */
+    public function test_can_get_total_requests_by_consumer(): void
+    {
+        GatewayLog::factory()->create(['consumer_id' => 1]);
+        GatewayLog::factory()->create(['consumer_id' => 1]);
+        GatewayLog::factory()->create(['consumer_id' => 2]);
+
+        $records = $this->repository->getTotalRequestsByConsumer();
+
+        $this->assertCount(2, $records);
+        $this->assertEquals(2, $records->firstWhere('consumer_id', '=', 1)->total_requests);
+        $this->assertEquals(1, $records->firstWhere('consumer_id', '=', 2)->total_requests);
+    }
+
+    /**
+     * @group repositories
+     * @group gateway_log
+     */
+    public function test_can_get_empty_total_requests_by_consumer(): void
+    {
+        $records = $this->repository->getTotalRequestsByConsumer();
+
+        $this->assertCount(0, $records);
+        $this->assertTrue($records->isEmpty());
+    }
+
+    /**
+     * @group repositories
+     * @group gateway_log
+     */
+    public function test_can_get_total_requests_by_service(): void
+    {
+        GatewayLog::factory()->create(['service_id' => 1, 'service_name' => 'Service A']);
+        GatewayLog::factory()->create(['service_id' => 2, 'service_name' => 'Service B']);
+        GatewayLog::factory()->create(['service_id' => 2, 'service_name' => 'Service B']);
+
+        $records = $this->repository->getTotalRequestsByService();
+
+        $this->assertCount(2, $records);
+        $this->assertEquals(1, $records->firstWhere('service_id', '=', 1)->total_requests);
+        $this->assertEquals(2, $records->firstWhere('service_id', '=', 2)->total_requests);
+    }
+
+    /**
+     * @group repositories
+     * @group gateway_log
+     */
+    public function test_can_get_empty_total_requests_by_service(): void
+    {
+        $records = $this->repository->getTotalRequestsByService();
+
+        $this->assertCount(0, $records);
+        $this->assertTrue($records->isEmpty());
+    }
+
+    /**
+     * @group repositories
+     * @group gateway_log
+     */
+    public function test_can_get_latencies_average_time_by_service(): void
+    {
+        GatewayLog::factory()->create([
+            'service_id' => 1,
+            'service_name' => 'Service A',
+            'latency_proxy' => 100,
+            'latency_gateway' => 200,
+            'latency_request' => 300
+        ]);
+        GatewayLog::factory()->create([
+            'service_id' => 1,
+            'service_name' => 'Service A',
+            'latency_proxy' => 200,
+            'latency_gateway' => 300,
+            'latency_request' => 400
+        ]);
+        GatewayLog::factory()->create([
+            'service_id' => 2,
+            'service_name' => 'Service B',
+            'latency_proxy' => 150,
+            'latency_gateway' => 250,
+            'latency_request' => 350
+        ]);
+
+        $records = $this->repository->getLatenciesAverageTimeByService();
+        $latenciesServiceA = $records->firstWhere('service_id', 1);
+        $latenciesServiceB = $records->firstWhere('service_id', 2);
+
+        $this->assertCount(2, $records);
+
+        $this->assertEquals(150, $latenciesServiceA->avg_time_latency_proxy);
+        $this->assertEquals(250, $latenciesServiceA->avg_time_latency_gateway);
+        $this->assertEquals(350, $latenciesServiceA->avg_time_latency_request);
+
+        $this->assertEquals(150, $latenciesServiceB->avg_time_latency_proxy);
+        $this->assertEquals(250, $latenciesServiceB->avg_time_latency_gateway);
+        $this->assertEquals(350, $latenciesServiceB->avg_time_latency_request);
+    }
+
+    /**
+     * @group repositories
+     * @group gateway_log
+     */
+    public function test_can_get_empty_latencies_average_time_by_service(): void
+    {
+        $records = $this->repository->getLatenciesAverageTimeByService();
+
+        $this->assertCount(0, $records);
+        $this->assertTrue($records->isEmpty());
+    }
 }
