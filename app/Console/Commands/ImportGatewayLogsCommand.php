@@ -95,7 +95,8 @@ class ImportGatewayLogsCommand extends Command
 
 		    if (!feof($stream)) {
 		        throw new Exception(
-			        'Erro ao processar o arquivo '. $filePath . '. A leitura foi interrompida antes de alcançar o final. Verifique se o arquivo possui algum problema.'
+			        'Erro ao processar o arquivo '. $filePath . '. A leitura foi interrompida antes de alcançar o '
+						. 'final. Verifique se o arquivo possui algum problema.'
 			    );
 		    }
 		} finally {
