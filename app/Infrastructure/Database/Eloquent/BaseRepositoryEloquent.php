@@ -36,6 +36,24 @@ class BaseRepositoryEloquent implements RepositoryEloquentInterface
         return $this->model->create($data);
     }
 
+    public function update(int $modelId, BaseDto $dto): Model
+    {
+        $data = $dto->toArray();
+
+        if (empty($data)) {
+            throw new InvalidArgumentException(
+                'You did not provide any data to update the record.',
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $item = $this->model->findOrFail($modelId);
+        $item->update($data);
+        $item->refresh();
+
+        return $item;
+    }
+
     public function getAll(array $columns = ['*']): Collection
     {
         return $this->model->orderBy('id', 'desc')->get($columns);
