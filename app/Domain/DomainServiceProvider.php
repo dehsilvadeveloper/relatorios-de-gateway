@@ -2,6 +2,7 @@
 
 namespace App\Domain;
 
+use App\Domain\Report\Providers\ReportServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 class DomainServiceProvider extends ServiceProvider
@@ -13,7 +14,7 @@ class DomainServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->register(ReportServiceProvider::class);
     }
 
     /**
