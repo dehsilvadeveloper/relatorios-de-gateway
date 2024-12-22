@@ -51,13 +51,30 @@ class GenerateReportsCommand extends Command
 	    }
 
         try {
-            foreach ($pendingReports as $pendingReport) {
-                $this->reportGenerationService->generate($pendingReport);
+            $this->info('Iniciando geração de relatórios pendentes...' . PHP_EOL);
 
-                $this->info('Relatório de ID #' . $pendingReport->id . ' processado com sucesso.');
+            foreach ($pendingReports as $pendingReport) {
+                $this->line('Iniciando geração do relatório de ID #' . $pendingReport->id . '.' . PHP_EOL);
+
+                $totalItems = $this->reportGenerationService->getReportTotalLines($pendingReport);
+                $progressBar = $this->output->createProgressBar($totalItems);
+                $progressBar->setFormat('%current%/%max% linhas inseridas [%bar%] %percent:3s%%');
+                $progressBar->start();
+    
+                // Processamos a geração do relatório enquanto atualizamos a barra de progresso via callback
+                $this->reportGenerationService->generate(
+                    $pendingReport,
+                    function ($processed) use ($progressBar) {
+                        $progressBar->setProgress($processed);
+                    }
+                );
+    
+                $progressBar->finish();
+
+                $this->line(PHP_EOL . 'Relatório de ID #' . $pendingReport->id . ' gerado com sucesso.' . PHP_EOL);
             }
 
-            $this->info('Todos os relatórios pendentes de geração foram processados.');
+            $this->info('Todos os relatórios pendentes de geração foram processados.' . PHP_EOL);
 
             return Command::SUCCESS;
         } catch (Throwable $exception) {

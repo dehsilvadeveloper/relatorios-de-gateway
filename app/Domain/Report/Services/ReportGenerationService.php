@@ -25,10 +25,10 @@ class ReportGenerationService implements ReportGenerationServiceInterface
     ) {
     }
 
-    public function generate(Report $report): bool
+    public function generate(Report $report, ?callable $progressCallback = null): bool
     {
         try {
-            $filename = $this->generateCsv($report);
+            $filename = $this->generateCsv($report, $progressCallback);
 
             $this->reportRepository->update(
                 $report->id,
@@ -65,7 +65,12 @@ class ReportGenerationService implements ReportGenerationServiceInterface
         }
     }
 
-    private function generateCsv(Report $report): string
+    public function getReportTotalLines(Report $report): int
+    {
+        return $this->getQueryForReportData($report->report_type_id)->count();
+    }
+
+    private function generateCsv(Report $report, ?callable $progressCallback = null): string
     {
         Storage::disk('local')->makeDirectory('generated_reports');
 
@@ -73,12 +78,11 @@ class ReportGenerationService implements ReportGenerationServiceInterface
         $filePath = 'generated_reports/' . $filename;
         $file = fopen(storage_path('app/' . $filePath), 'w');
 
-        $processed = 0;
-
         try {
             $query = $this->getQueryForReportData($report->report_type_id);
+            $processed = 0;
 
-            $query->chunk(1000, function ($reportContentLines) use ($file, &$processed) {
+            $query->chunk(1000, function ($reportContentLines) use ($file, &$processed, $progressCallback) {
                 if ($processed === 0 && $reportContentLines->isNotEmpty()) {
                     fputcsv($file, array_keys((array) $reportContentLines->first()), ';');
                 }
@@ -86,6 +90,10 @@ class ReportGenerationService implements ReportGenerationServiceInterface
                 foreach ($reportContentLines as $reportContentLine) {
                     fputcsv($file, (array) $reportContentLine, ';');
                     $processed++;
+
+                    if ($progressCallback) {
+                        $progressCallback($processed);
+                    }
                 }
             });
 
