@@ -3,7 +3,7 @@
 namespace App\Domain\Report\Providers;
 
 use App\Domain\Report\Services\Interfaces\ReportGenerationServiceInterface;
-use App\Domain\Reports\Services\ReportGenerationService;
+use App\Domain\Report\Services\ReportGenerationService;
 use Illuminate\Support\ServiceProvider;
 
 class ReportServiceProvider extends ServiceProvider

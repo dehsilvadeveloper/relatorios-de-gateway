@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Reports\Services;
+namespace App\Domain\Report\Services;
 
 use App\Domain\GatewayLog\Repositories\GatewayLogRepositoryInterface;
 use App\Domain\Report\DataTransferObjects\UpdateReportDto;
