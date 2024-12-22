@@ -70,34 +70,47 @@ class ReportGenerationService implements ReportGenerationServiceInterface
         Storage::disk('local')->makeDirectory('generated_reports');
 
         $filename = 'report_' . $report->id . '_' . Str::uuid() . '.csv';
-        $file = fopen(storage_path('app/generated_reports/' . $filename), 'w');
+        $filePath = 'generated_reports/' . $filename;
+        $file = fopen(storage_path('app/' . $filePath), 'w');
 
-        $query = $this->getQueryForReportData($report->report_type_id);
+        try {
+            $query = $this->getQueryForReportData($report->report_type_id);
 
-        $query->chunk(1000, function ($reportContentLines) use ($file) {
-            foreach ($reportContentLines as $reportContentLine) {
-                fputcsv($file, (array)$reportContentLine);
+            $query->chunk(1000, function ($reportContentLines) use ($file) {
+                if ($reportContentLines->isNotEmpty()) {
+                    fputcsv($file, array_keys((array) $reportContentLines->first()), ';');
+                }
+
+                foreach ($reportContentLines as $reportContentLine) {
+                    fputcsv($file, (array) $reportContentLine, ';');
+                }
+            });
+
+            if (!Storage::disk('local')->exists($filePath)) {
+                throw new Exception(
+                    'Erro. O arquivo do relatório, nomeado ' . $filename . ', não pôde ser localizado. '
+                        . 'Verifique os logs para saber se houveram falhas no processo de geração.'
+                );
             }
-        });
 
-        fclose($file);
+            return $filename;
+        } catch (Throwable $exception) {
+            if (Storage::disk('local')->exists($filePath)) {
+                Storage::disk('local')->delete($filePath);
+            }
 
-        if (!Storage::disk('local')->exists('generated_reports/' . $filename)) {
-            throw new Exception(
-                'Erro. O arquivo do relatório, nomeado ' . $filename . ', não pôde ser localizado. '
-                    . 'Verifique os logs para saber se houveram falhas no processo de geração.'
-            );
+            throw $exception;
+        } finally {
+            fclose($file);
         }
-
-        return $filename;
     }
 
     private function getQueryForReportData(int $reportType): Builder
 	{
 		return match ($reportType) {
-            ReportTypeEnum::TOTAL_REQUESTS_BY_CONSUMER => $this->getTotalRequestsByConsumerQuery(),
-            ReportTypeEnum::TOTAL_REQUESTS_BY_SERVICE => $this->getTotalRequestsByServiceQuery(),
-            ReportTypeEnum::LATENCIES_AVERAGE_TIME_BY_SERVICE => $this->getLatenciesAverageTimeByServiceQuery(),
+            ReportTypeEnum::TOTAL_REQUESTS_BY_CONSUMER->value => $this->getTotalRequestsByConsumerQuery(),
+            ReportTypeEnum::TOTAL_REQUESTS_BY_SERVICE->value => $this->getTotalRequestsByServiceQuery(),
+            ReportTypeEnum::LATENCIES_AVERAGE_TIME_BY_SERVICE->value => $this->getLatenciesAverageTimeByServiceQuery(),
             default => throw new InvalidArgumentException(
               'Tipo de relatório desconhecido. ID do tipo solicitado: '. $reportType
             )

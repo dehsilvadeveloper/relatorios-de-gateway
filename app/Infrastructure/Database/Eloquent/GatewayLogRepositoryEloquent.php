@@ -19,7 +19,8 @@ class GatewayLogRepositoryEloquent extends BaseRepositoryEloquent implements Gat
     {
         $query = DB::table('gateway_logs')
             ->select('consumer_id', DB::raw('COUNT(*) AS total_requests'))
-            ->groupBy('consumer_id');
+            ->groupBy('consumer_id')
+            ->orderBy('consumer_id');
 
         return (!$returnBuilder) ? $query->get() : $query;
     }
@@ -28,7 +29,8 @@ class GatewayLogRepositoryEloquent extends BaseRepositoryEloquent implements Gat
     {
         $query = DB::table('gateway_logs')
             ->select('service_id', 'service_name', DB::raw('COUNT(*) AS total_requests'))
-            ->groupBy('service_id', 'service_name');
+            ->groupBy('service_id', 'service_name')
+            ->orderBy('service_id');
 
         return (!$returnBuilder) ? $query->get() : $query;
     }
@@ -43,7 +45,8 @@ class GatewayLogRepositoryEloquent extends BaseRepositoryEloquent implements Gat
                 DB::raw('AVG(latency_gateway) AS avg_time_latency_gateway'),
                 DB::raw('AVG(latency_request) AS avg_time_latency_request')
             )
-            ->groupBy('service_id', 'service_name');
+            ->groupBy('service_id', 'service_name')
+            ->orderBy('service_id');
 
         return (!$returnBuilder) ? $query->get() : $query;
     }
