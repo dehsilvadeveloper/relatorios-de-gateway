@@ -2,12 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\GatewayLog\Repositories\GatewayLogRepositoryInterface;
 use App\Domain\Report\Enums\ReportStatusEnum;
-use App\Domain\Report\Models\Report;
 use App\Domain\Report\Repositories\ReportRepositoryInterface;
-use Exception;
+use App\Domain\Report\Services\Interfaces\ReportGenerationServiceInterface;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 use Throwable;
 
 class GenerateReportsCommand extends Command
@@ -33,7 +32,7 @@ class GenerateReportsCommand extends Command
     protected $description = 'Gera relatórios em formato CSV com base em solicitações presentes na entidade reports';
 
     public function __construct(
-        protected GatewayLogRepositoryInterface $gatewayLogRepository,
+        protected ReportGenerationServiceInterface $reportGenerationService,
         protected ReportRepositoryInterface $reportRepository
     ) {
         parent::__construct();
@@ -44,32 +43,32 @@ class GenerateReportsCommand extends Command
      */
     public function handle(): int
     {
-        $reportFilePath = 'generated_reports/report.csv';
-        $pendingReport = $this->getPendingReport();
+        $pendingReports = $this->getPendingReports();
 
-        if (!$pendingReport) {
+        if ($pendingReports->isEmpty()) {
 	        $this->info('Não existem relatórios para serem gerados. Finalizando execução.');
 	        return Command::SUCCESS;
 	    }
 
         try {
-            $this->generateCsvReport($pendingReport);
+            foreach ($pendingReports as $pendingReport) {
+                $this->reportGenerationService->generate($pendingReport);
+
+                $this->info('Relatório de ID #' . $pendingReport->id . ' processado com sucesso.');
+            }
+
+            $this->info('Todos os relatórios pendentes de geração foram processados.');
 
             return Command::SUCCESS;
         } catch (Throwable $exception) {
-            $this->error('Erro durante a a geração do relatório: ' . $exception->getMessage());
+            $this->error('Erro durante geração de relatórios: ' . $exception->getMessage());
 
             return Command::FAILURE;
         }
     }
 
-    private function getPendingReport(): ?Report
+    private function getPendingReports(): Collection
     {
-        return $this->reportRepository->firstByField('report_status_id', ReportStatusEnum::PENDING->value);
-    }
-
-    private function generateCsvReport(Report $pendingReport)
-    {
-        return;
+        return $this->reportRepository->getByField('report_status_id', ReportStatusEnum::PENDING->value);
     }
 }
