@@ -14,5 +14,9 @@ interface RepositoryEloquentInterface
 
     public function getAll(array $columns = ['*']): Collection;
 
+    public function getByField(string $field, mixed $value, array $columns = ['*']): Collection;
+
     public function firstById(int $modelId, array $columns = ['*'], array $relations = []): ?Model;
+
+    public function firstByField(string $field, mixed $value, array $columns = ['*'], array $relations = []): ?Model;
 }

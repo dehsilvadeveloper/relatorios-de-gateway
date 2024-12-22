@@ -154,7 +154,9 @@ class ReportRepositoryEloquentTest extends TestCase
         $this->assertCount($recordsCount, $records);
 
         for ($i = 0; $i <= ($recordsCount - 1); $i++) {
-            $this->assertEquals($generatedRecordsAsArray[$i]['report_status_id'], $recordsAsArray[$i]['report_status_id']);
+            $this->assertEquals(
+                $generatedRecordsAsArray[$i]['report_status_id'], $recordsAsArray[$i]['report_status_id']
+            );
             $this->assertEquals($generatedRecordsAsArray[$i]['report_type_id'], $recordsAsArray[$i]['report_type_id']);
             $this->assertEquals($generatedRecordsAsArray[$i]['filename'], $recordsAsArray[$i]['filename']);
             $this->assertEquals($generatedRecordsAsArray[$i]['generated_at'], $recordsAsArray[$i]['generated_at']);
@@ -168,6 +170,46 @@ class ReportRepositoryEloquentTest extends TestCase
     public function test_can_get_empty_list_of_records(): void
     {
         $records = $this->repository->getAll();
+
+        $this->assertCount(0, $records);
+        $this->assertTrue($records->isEmpty());
+    }
+
+    /**
+     * @group repositories
+     * @group report
+     */
+    public function test_can_get_list_filtered_by_field(): void
+    {
+        $recordsCount = 3;
+
+        $generatedRecords = Report::factory()->count($recordsCount)->create([
+            'report_status_id' => ReportStatusEnum::PENDING->value
+        ]);
+        $generatedRecordsAsArray = $generatedRecords->toArray();
+
+        $records = $this->repository->getByField('report_status_id', ReportStatusEnum::PENDING->value);
+        $recordsAsArray = $records->toArray();
+
+        $this->assertCount($recordsCount, $records);
+
+        for ($i = 0; $i <= ($recordsCount - 1); $i++) {
+            $this->assertEquals(
+                $generatedRecordsAsArray[$i]['report_status_id'], $recordsAsArray[$i]['report_status_id']
+            );
+            $this->assertEquals($generatedRecordsAsArray[$i]['report_type_id'], $recordsAsArray[$i]['report_type_id']);
+            $this->assertEquals($generatedRecordsAsArray[$i]['filename'], $recordsAsArray[$i]['filename']);
+            $this->assertEquals($generatedRecordsAsArray[$i]['generated_at'], $recordsAsArray[$i]['generated_at']);
+        }
+    }
+
+    /**
+     * @group repositories
+     * @group report
+     */
+    public function test_can_get_empty_list_filtered_by_field(): void
+    {
+        $records = $this->repository->getByField('report_status_id', 9999);
 
         $this->assertCount(0, $records);
         $this->assertTrue($records->isEmpty());
@@ -197,6 +239,36 @@ class ReportRepositoryEloquentTest extends TestCase
     public function test_cannot_find_by_id_a_nonexistent_record(): void
     {
         $foundRecord = $this->repository->firstById(1);
+
+        $this->assertNull($foundRecord);
+    }
+
+    /**
+     * @group repositories
+     * @group report
+     */
+    public function test_can_find_by_field(): void
+    {
+        $existingRecord = Report::factory()->create([
+            'report_status_id' => ReportStatusEnum::PENDING->value
+        ]);
+
+        $foundRecord = $this->repository->firstByField('report_status_id', ReportStatusEnum::PENDING->value);
+
+        $this->assertInstanceOf(Report::class, $foundRecord);
+        $this->assertEquals($existingRecord->report_status_id, $foundRecord->report_status_id);
+        $this->assertEquals($existingRecord->report_type_id, $foundRecord->report_type_id);
+        $this->assertEquals($existingRecord->filename, $foundRecord->filename);
+        $this->assertEquals($existingRecord->generated_at, $foundRecord->generated_at);
+    }
+
+    /**
+     * @group repositories
+     * @group report
+     */
+    public function test_cannot_find_by_field_a_nonexistent_record(): void
+    {
+        $foundRecord = $this->repository->firstByField('report_status_id', 9999);
 
         $this->assertNull($foundRecord);
     }
