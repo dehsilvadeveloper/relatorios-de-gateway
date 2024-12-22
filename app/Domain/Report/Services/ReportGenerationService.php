@@ -73,16 +73,19 @@ class ReportGenerationService implements ReportGenerationServiceInterface
         $filePath = 'generated_reports/' . $filename;
         $file = fopen(storage_path('app/' . $filePath), 'w');
 
+        $processed = 0;
+
         try {
             $query = $this->getQueryForReportData($report->report_type_id);
 
-            $query->chunk(1000, function ($reportContentLines) use ($file) {
-                if ($reportContentLines->isNotEmpty()) {
+            $query->chunk(1000, function ($reportContentLines) use ($file, &$processed) {
+                if ($processed === 0 && $reportContentLines->isNotEmpty()) {
                     fputcsv($file, array_keys((array) $reportContentLines->first()), ';');
                 }
 
                 foreach ($reportContentLines as $reportContentLine) {
                     fputcsv($file, (array) $reportContentLine, ';');
+                    $processed++;
                 }
             });
 
