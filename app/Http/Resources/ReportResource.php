@@ -18,7 +18,7 @@ class ReportResource extends JsonResource
             'filename' => $this->filename,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'generated_at' => $this->authorized_at?->format('Y-m-d H:i:s')
+            'generated_at' => $this->generated_at?->format('Y-m-d H:i:s')
         ];
     }
 }
