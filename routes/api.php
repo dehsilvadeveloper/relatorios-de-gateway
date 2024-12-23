@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ReportStatusController;
+use App\Http\Controllers\ReportTypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +23,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return 'Welcome to the API.';
 })->name('welcome');
+
+Route::prefix('/report-statuses')->name('report-status.')->group(function () {
+    Route::get('/', [ReportStatusController::class, 'index'])->name('index');
+});
+
+Route::prefix('/report-types')->name('report-type.')->group(function () {
+    Route::get('/', [ReportTypeController::class, 'index'])->name('index');
+});
