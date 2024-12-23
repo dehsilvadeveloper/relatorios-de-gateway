@@ -11,9 +11,17 @@ username: root
 password: root
 ```
 
-### Importando as informações do arquivo de log
+### Armazenando arquivo de logs no storage
 
-Por padrão arquivo **logs.txt** - fornecido pelo desafio - fica armazenado na pasta `storage/app/gateway_logs`. Se, ao clonar o repositório, o arquivo não tiver vindo junto, você pode fazer o download do mesmo na url `https://github.com/dehsilvadeveloper/relatorios-de-gateway/blob/main/storage/app/gateway_logs/logs.txt` e colocá-lo no diretório especificado manualmente.
+Antes de começar a usar a aplicação, é necessário garantir que o arquivo **logs.txt** - fornecido pelo desafio - está armazenado na pasta `storage/app/gateway_logs`. Para isso, siga as seguintes etapas:
+
+- Acesse a pasta especificada e remova quaisquer arquivos que estejam presentes (pode ser que exista um arquivo *placeholder*).
+
+- Faça o download do arquivo **logs.txt** na url `https://github.com/dehsilvadeveloper/relatorios-de-gateway/blob/main/storage/app/gateway_logs/logs.txt` (utilize a opção **Download Raw File** no repositório) e coloque-o na pasta `storage/app/gateway_logs`.
+
+Pronto! Agora o arquivo está pronto para ser usado pela aplicação.
+
+### Importando as informações do arquivo de log
 
 Com a certeza de que o arquivo **logs.txt** existe no diretório esperado, você deverá acessar o container da aplicação e rodar o comando de importação:
 
@@ -35,15 +43,74 @@ Após o fim da importação, você poderá visitar o banco de dados e conferir s
 
 ### Solicitando um novo relatório
 
-Breve.
+Para solicitar a geração de um novo relatório, você deverá efetuar uma requisição para a api conforme exemplificado a seguir.
+
+```
+POST localhost:9998/api/reports
+Accept: application/json
+Content-Type: application/json
+
+{
+    "report_type_id": 1
+}
+```
+
+Neste caso `report_type_id` refere-se ao **tipo de relatório** desejado. Em caso de sucesso, a solicitação será registrada com o status *pendente* e ficará aguardando que o comando de geração de relatórios seja executado (saiba mais sobre essa etapa no tópico **Gerando relatórios**).
+
+Caso queira saber os **tipos de relatórios** que podem ser gerados, você pode usar a requisição a seguir.
+
+```
+GET localhost:9998/api/report-types
+Accept: application/json
+Content-Type: application/json
+```
+
+Você também pode consultar a lista de **tipos de relatórios** na tabela a seguir.
+
+| Id | Nome |
+|-|-|  
+| 1 | total requisições por consumidor | 
+| 2 | total requisições por serviço |
+| 3 | tempo médio das latências por serviço |
 
 ### Consultando o progresso de relatórios
 
-Breve.
+Caso queira saber se um relatório já foi gerado, você pode usar a requisição a seguir.
+
+```
+GET localhost:9998/api/reports
+Accept: application/json
+Content-Type: application/json
+```
+
+A resposta obtida irá conter uma lista de relatórios cadastrados na tabela `reports` do banco de dados contendo o **status** atual dos mesmos.
+
+Caso queira saber os **status possíveis** para solicitações de relatórios, você pode usar a requisição a seguir.
+
+```
+GET localhost:9998/api/report-statuses
+Accept: application/json
+Content-Type: application/json
+```
+
+Você também pode consultar a lista de **status possíveis** na tabela a seguir.
+
+| Id | Nome |
+|-|-|  
+| 1 | pendente | 
+| 2 | concluído |
+| 3 | erro |
 
 ### Efetuando o download de um relatório
 
-Breve.
+Para efetuar o download do arquivo de um relatório, você deve efetuar uma requisição conforme exemplificado a seguir.
+
+```
+GET localhost:9998/api/reports/1/download
+Accept: application/json
+```
+
+Vale ressaltar que só é possível efetuar o download de arquivos de relatórios de solicitações que já tenham sido sinalizadas como **concluídas**.
 
 ### Gerando relatórios
 
@@ -66,6 +133,10 @@ Você poderá acompanhar o progresso do processo no próprio terminal.
 O comando irá verificar se existem registros na tabela `reports` com o status **pendente** e, em caso positivo, vai buscar os dados necessários para a confecção do relatório de acordo com o seu tipo (especificado na coluna *report_type_id*).
 
 Caso a geração do relatório seja um sucesso, você poderá notar que o registro na tabela `reports` foi atualizado e agora as colunas **filename** e **generated_at** estão preenchidas, além do status (referenciado pela coluna *report_status_id*) ter sido modificado para **concluído**. O arquivo `.csv` do relatório estará presente no diretório `storage/app/generated_reports`.
+
+<a href="./images/print_03.jpeg" target="_blank">
+    <img src="./images/print_03.jpeg" alt="print" />
+</a>
 
 Vale ressaltar que os tipos de relatórios solicitados pelo desafio foram os seguintes:
 
