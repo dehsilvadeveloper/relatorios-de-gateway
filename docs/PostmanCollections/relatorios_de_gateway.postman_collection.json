@@ -7,106 +7,181 @@
 	},
 	"item": [
 		{
-			"name": "Listar Relatorios",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "default"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "localhost:9998/api/reports",
-					"host": [
-						"localhost"
-					],
-					"port": "9998",
-					"path": [
-						"api",
-						"reports"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Solicitar Relatorio",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "default"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"report_type_id\": 1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Relatorios",
+			"item": [
+				{
+					"name": "Listar Relatorios",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "localhost:9998/api/reports",
+							"host": [
+								"localhost"
+							],
+							"port": "9998",
+							"path": [
+								"api",
+								"reports"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:9998/api/reports",
-					"host": [
-						"localhost"
-					],
-					"port": "9998",
-					"path": [
-						"api",
-						"reports"
-					]
+				{
+					"name": "Solicitar Relatorio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"report_type_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9998/api/reports",
+							"host": [
+								"localhost"
+							],
+							"port": "9998",
+							"path": [
+								"api",
+								"reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download de Relatorio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "localhost:9998/api/reports/:id/download",
+							"host": [
+								"localhost"
+							],
+							"port": "9998",
+							"path": [
+								"api",
+								"reports",
+								":id",
+								"download"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Download de Relatorio",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "localhost:9998/api/reports/:id/download",
-					"host": [
-						"localhost"
-					],
-					"port": "9998",
-					"path": [
-						"api",
-						"reports",
-						":id",
-						"download"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1"
+			"name": "Tipos de Relatorio",
+			"item": [
+				{
+					"name": "Listar Tipos de Relatorio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "localhost:9998/api/report-types",
+							"host": [
+								"localhost"
+							],
+							"port": "9998",
+							"path": [
+								"api",
+								"report-types"
+							]
 						}
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "Statuses de Relatorio",
+			"item": [
+				{
+					"name": "Listar Statuses de Relatório",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "localhost:9998/api/report-statuses",
+							"host": [
+								"localhost"
+							],
+							"port": "9998",
+							"path": [
+								"api",
+								"report-statuses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
