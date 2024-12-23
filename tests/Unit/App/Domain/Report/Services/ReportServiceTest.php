@@ -203,8 +203,8 @@ class ReportServiceTest extends TestCase
         $response = $this->service->getReportFileStream($fakeRecord->id);
 
         $this->assertIsArray($response);
-        $this->assertEquals($filename, $response[0]);
-        $this->assertEquals('stream content', $response[1]);
+        $this->assertEquals($filename, $response['file_name']);
+        $this->assertEquals('stream content', $response['file_stream']);
     }
 
     /**

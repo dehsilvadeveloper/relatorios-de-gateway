@@ -39,7 +39,7 @@ class ReportStatusController extends Controller
             );
 
             return $this->sendErrorResponse(
-                message: 'An error has occurred. Could not get the report statuses list as requested.',
+                message: 'Ocorreu um erro. Não foi possível obter a lista de status de relatórios conforme solicitado.',
                 code: $exception->getCode()
             );
         }

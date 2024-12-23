@@ -6,7 +6,7 @@ use App\Domain\Report\Models\ReportStatus;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class GetReportStatusTest extends TestCase
+class ListReportStatusTest extends TestCase
 {
     /**
      * @group report

@@ -11,4 +11,6 @@ interface ReportServiceInterface
     public function create(CreateReportDto $dto): ?Report;
 
     public function getAll(array $columns = ['*']): Collection;
+
+    public function getReportFileStream(int $id): array;
 }

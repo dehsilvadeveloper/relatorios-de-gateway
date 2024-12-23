@@ -2,28 +2,46 @@
 
 namespace Tests\Feature\Report;
 
-use App\Domain\Report\Models\ReportType;
+use App\Domain\Report\Models\Report;
+use Database\Seeders\ReportStatusSeeder;
+use Database\Seeders\ReportTypeSeeder;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class GetReportTypeTest extends TestCase
+class ListReportTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(ReportStatusSeeder::class);
+        $this->seed(ReportTypeSeeder::class);
+    }
+
     /**
      * @group report
      */
     public function test_can_get_list_of_records(): void
     {
         $recordsCount = 3;
-        ReportType::factory()->count($recordsCount)->create();
+        Report::factory()->count($recordsCount)->create();
 
-        $response = $this->getJson(route('report-type.index'));
+        $response = $this->getJson(route('report.index'));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
                     'id',
-                    'name'
+                    'type' => [
+                        'id',
+                        'name'
+                    ],
+                    'status' => [
+                        'id',
+                        'name'
+                    ],
+                    'filename'
                 ]
             ]
         ]);
@@ -35,7 +53,7 @@ class GetReportTypeTest extends TestCase
      */
     public function test_can_get_empty_list_of_records(): void
     {
-        $response = $this->getJson(route('report-type.index'));
+        $response = $this->getJson(route('report.index'));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([

@@ -39,7 +39,7 @@ class ReportTypeController extends Controller
             );
 
             return $this->sendErrorResponse(
-                message: 'An error has occurred. Could not get the report types list as requested.',
+                message: 'Ocorreu um erro. Não foi possível obter a lista de tipos de relatório conforme solicitado.',
                 code: $exception->getCode()
             );
         }

@@ -82,8 +82,8 @@ class ReportService implements ReportServiceInterface
             }
 
             return [
-                $report->filename,
-                Storage::disk('local')->readStream($filePath)
+                'file_name' => $report->filename,
+                'file_stream' => Storage::disk('local')->readStream($filePath)
             ];
         } catch (Throwable $exception) {
             Log::error(
