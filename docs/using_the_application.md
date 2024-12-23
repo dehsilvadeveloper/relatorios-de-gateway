@@ -11,6 +11,16 @@ username: root
 password: root
 ```
 
+### Postman Collection
+
+Uma *collection* criada no programa [Postman](https://www.postman.com/downloads/) está disponível para uso:
+
+<a href="./PostmanCollections/relatorios_de_gateway.postman_collection.json" target="_blank">
+    Download da Collection
+</a>
+
+Você pode utilizá-la para testar requisições da api.
+
 ### Armazenando arquivo de logs no storage
 
 Antes de começar a usar a aplicação, é necessário garantir que o arquivo **logs.txt** - fornecido pelo desafio - está armazenado na pasta `storage/app/gateway_logs`. Para isso, siga as seguintes etapas:
@@ -110,7 +120,9 @@ GET localhost:9998/api/reports/1/download
 Accept: application/json
 ```
 
-Vale ressaltar que só é possível efetuar o download de arquivos de relatórios de solicitações que já tenham sido sinalizadas como **concluídas**.
+No exemplo, o valor **1** equivale ao ID do relatório na tabela `reports`. A resposta da requisição será o arquivo do relatório, que você poderá salvar em seu pc se assim desejar.
+
+Vale ressaltar que só é possível efetuar o download de arquivos de relatórios de solicitações que já tenham sido sinalizadas como **concluídas**. Para saber mais sobre a geração dos arquivos dos relatórios, consulte o tópico **Gerando relatórios**
 
 ### Gerando relatórios
 
