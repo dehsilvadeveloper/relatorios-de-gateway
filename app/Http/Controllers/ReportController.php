@@ -58,7 +58,8 @@ class ReportController extends Controller
             );
 
             return $this->sendErrorResponse(
-                message: 'Ocorreu um erro. Não foi possível criar uma nova solicitação de relatório conforme solicitado.',
+                message: 'Ocorreu um erro. Não foi possível criar uma nova solicitação de '
+                    . 'relatório conforme solicitado.',
                 code: $exception->getCode()
             );
         }
@@ -118,7 +119,8 @@ class ReportController extends Controller
             );
 
             return $this->sendErrorResponse(
-                message: 'Ocorreu um erro. Não foi possível efetuar o download do arquivo do relatório conforme solicitado.',
+                message: 'Ocorreu um erro. Não foi possível efetuar o download do arquivo '
+                    . 'do relatório conforme solicitado.',
                 code: $exception->getCode()
             );
         }
